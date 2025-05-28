@@ -81,6 +81,7 @@ public class ConsultaCalif extends JFrame {
         ); // fin de la llamada a addWindowListener
         pack(); // empaquetar componentes y mostrar ventana
         setSize(600, 250);
+        setLocationRelativeTo(null);
         setVisible(true);
     } // fin del constructor de ConsultaCreditos
       // permitir al usuario seleccionar el archivo a abrir
