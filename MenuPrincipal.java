@@ -7,14 +7,14 @@ public class MenuPrincipal {
         int opcion = JO.showOptionDialog(null, "Seleccione una opción", "Menú Principal",
                 1, 1, null, opc, opc[0]);
         switch (opcion) {
-            case 0:
-                CrearArchivoSecuencial crearArchivo = new CrearArchivoSecuencial();
+            case 0
+                new CrearArchivoSecuencial();
                 break;
             case 1:
-                LeerArchivoSecuencial archivoSecuencial = new LeerArchivoSecuencial();
+                new LeerArchivoSecuencial();
                 break;
             case 2:
-                ConsultaCalif consultaCalif = new ConsultaCalif();
+                new ConsultaCalif();
                 break;
             case 3: 
             System.exit(0);
