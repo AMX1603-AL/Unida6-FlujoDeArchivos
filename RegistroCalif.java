@@ -9,22 +9,20 @@ public class RegistroCalif implements Serializable { // declaración de los camp
     private int Calif1;
     private int Calif2;
     private int Calif3;
-    private int Prom;
 
     // el constructor sin argumentos llama al otro constructor con valores
     // predeterminados
     public RegistroCalif() {
-        this(0, "", 0, 0, 0, 0);
+        this(0, "", 0, 0, 0);
     }
 
     // inicializar los campos de un registro
-    public RegistroCalif(int ctrl, String nombre, int Calif1, int Calif2, int Calif3, int prom) {
+    public RegistroCalif(int ctrl, String nombre, int Calif1, int Calif2, int Calif3) {
         EstablecerNumeroDeControl(ctrl);
         EstablecerNombre(nombre);
         EstablecerCalif1(Calif1);
         EstablecerCalif2(Calif2);
         EstablecerCalif3(Calif3);
-        EstablecerProm(prom);
     }
 
     public void EstablecerNumeroDeControl(int NumeroDeControl) {
@@ -74,12 +72,7 @@ public class RegistroCalif implements Serializable { // declaración de los camp
         return Calif3;
     }
 
-    public void EstablecerProm(int Prom) {
-        this.Prom = Prom;
-    }
-
-    // obtener saldo
     public int ObtenerProm() {
-        return Prom;
-    }
+        return (Calif1 + Calif2 + Calif3) / 3;
+    } // obtener promedio de calificaciones
 } // fin de la clase RegistroCuentas

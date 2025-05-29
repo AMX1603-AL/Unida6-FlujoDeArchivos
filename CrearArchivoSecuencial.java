@@ -15,7 +15,7 @@ public class CrearArchivoSecuencial extends JFrame {
     public CrearArchivoSecuencial() {
         super("Creación de un archivo secuencial de objetos");
         // crear instancia de interfaz de usuario reutilizable
-        interfazUsuario = new Plantilla(6); // cuatro campos de texto
+        interfazUsuario = new Plantilla(5); // cuatro campos de texto
         getContentPane().add(interfazUsuario, BorderLayout.CENTER);
         // configurar botón hacerTarea1 para usarlo en este programa
         botonAbrir = interfazUsuario.obtenerBotonHacerTarea1();
@@ -126,8 +126,7 @@ public class CrearArchivoSecuencial extends JFrame {
                             valoresCampos[Plantilla.NOMBRE],
                             Integer.parseInt(valoresCampos[Plantilla.CALIF1]),
                             Integer.parseInt(valoresCampos[Plantilla.CALIF2]),
-                            Integer.parseInt(valoresCampos[Plantilla.CALIF3]),
-                            Integer.parseInt(valoresCampos[Plantilla.PROM]));
+                            Integer.parseInt(valoresCampos[Plantilla.CALIF3]));
                     // escribir el registro y vaciar el búfer
                     salida.writeObject(registro);
                     salida.flush();

@@ -171,7 +171,7 @@ public class ConsultaCalif extends JFrame {
     private boolean debeMostrarse(double saldo) {
         if (tipoCuenta.equals("Aprobados") && saldo >= 70)
             return true;
-        else if (tipoCuenta.equals("Reprobados") && saldo <= 60)
+        else if (tipoCuenta.equals("No Aprobados") && saldo <= 60)
             return true;
         else if (tipoCuenta.equals("Dados de  baja") && saldo == 0)
             return true;
