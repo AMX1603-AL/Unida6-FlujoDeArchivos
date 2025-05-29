@@ -46,7 +46,7 @@ public class ConsultaCalif extends JFrame {
         botonCredito.addActionListener(new ManejadorBotones());
 
         // crear y configurar botón para obtener cuentas con saldos con débito
-        botonDebito = new JButton("No Aprobados");
+        botonDebito = new JButton("Reprobados");
         panelBotones.add(botonDebito);
         botonDebito.addActionListener(new ManejadorBotones());
 
@@ -207,7 +207,7 @@ public class ConsultaCalif extends JFrame {
     private boolean debeMostrarse(double saldo) {
         if (tipoCuenta.equals("Aprobados") && saldo >= 70)
             return true;
-        else if (tipoCuenta.equals("No Aprobados") && saldo <= 60)
+        else if (tipoCuenta.equals("Reprobados") && saldo <= 60)
             return true;
         else if (tipoCuenta.equals("Dados de  baja") && saldo == 0)
             return true;
