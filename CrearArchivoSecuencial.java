@@ -1,161 +1,173 @@
-
-//Ejemplo 6.8
+// Jesus Armando Diaz Santoyo
 // Escribir objetos secuencialmente en un archivo, mediante la clase ObjectOutputStream.
-import java.io.*;
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
 
-public class CrearArchivoSecuencial extends JFrame {
-    private ObjectOutputStream salida;
-    private Plantilla interfazUsuario;
-    private JButton botonIntro, botonAbrir, botonSalir, botonRegresar;
+import java.io.*;    // Importar clases de entrada/salida
+import java.awt.*;    // Importar clases para la GUI
+import java.awt.event.*; // Importar eventos de la GUI
+import javax.swing.*;    // Importar clases de Swing
 
-    // configurar GUI
+public class CrearArchivoSecuencial extends JFrame { // Clase principal que hereda de JFrame (ventana)
+    private ObjectOutputStream salida;   // Flujo de salida para escribir objetos
+    private Plantilla interfazUsuario;   // Interfaz gráfica reutilizable (campos de texto y botones)
+    private JButton botonIntro, botonAbrir, botonSalir, botonRegresar; // Botones de la interfaz
+
+    // Configurar la GUI en el constructor
     public CrearArchivoSecuencial() {
-        super("Creación de un archivo secuencial de objetos");
-        // crear instancia de interfaz de usuario reutilizable
-        interfazUsuario = new Plantilla(5); // cuatro campos de texto
-        getContentPane().add(interfazUsuario, BorderLayout.CENTER);
-        // configurar botón hacerTarea1 para usarlo en este programa
+        super("Creación de un archivo secuencial de objetos"); // Título de la ventana
+
+        // Crear instancia de interfaz de usuario reutilizable (5 campos de texto)
+        interfazUsuario = new Plantilla(5);
+        getContentPane().add(interfazUsuario, BorderLayout.CENTER); // Añadir la interfaz al centro de la ventana
+
+        // Configurar botón hacerTarea1 para abrir archivo
         botonAbrir = interfazUsuario.obtenerBotonHacerTarea1();
         botonAbrir.setText("Crear el archivo ...");
-        // registrar componente de escucha para llamar a abrirArchivo cuando se oprima
-        // el botón
+        // Registrar evento para abrir archivo al presionar el botón
         botonAbrir.addActionListener(
-                // clase interna anónima para manejar evento de botonAbrir
-                new ActionListener() { // llamar a abrirArchivo cuando se oprima el botón
-                    public void actionPerformed(ActionEvent evento) {
-                        abrirArchivo();
-                    }
-                } // fin de la clase interna anónima
-        ); // fin de la llamada a addActionListener
-           // configurar botón hacerTarea2 para usarlo en este programa
+            new ActionListener() { // Clase interna anónima para manejar el evento
+                public void actionPerformed(ActionEvent evento) {
+                    abrirArchivo(); // Llamar a abrirArchivo() cuando se presione el botón
+                }
+            } // Fin de la clase interna anónima
+        ); // Fin de la llamada a addActionListener
+
+        // Configurar botón hacerTarea2 para introducir datos
         botonIntro = interfazUsuario.obtenerBotonHacerTarea2();
         botonIntro.setText("Introducir");
-        botonIntro.setEnabled(false);
+        botonIntro.setEnabled(false); // Inicia deshabilitado
+
+        // Configurar botones restantes
         botonSalir = interfazUsuario.obtenerBotonHacerTarea3();
         botonRegresar = interfazUsuario.obtenerBotonHacerTarea4();
         botonRegresar.setText("Anterior Registro");
         botonIntro.setEnabled(false);
-        interfazUsuario.obtenerBotonHacerTarea4().setVisible(false);
+        interfazUsuario.obtenerBotonHacerTarea4().setVisible(false); // Ocultar botón no usado
 
+        // Configurar botón salir
         botonSalir.setText("Salir");
-        botonSalir.setEnabled(false); // deshabilitar botón
-        // registrar componente de escucha para llamar a agregarRegistro cuando se
-        // oprima el botón
-        botonIntro.addActionListener(
-                // clase interna anónima para manejar evento de botonIntro
-                new ActionListener() { // llamar a agregarRegistro cuando se oprima el botón
-                    public void actionPerformed(ActionEvent evento) {
-                        agregarRegistro();
-                    }
-                } // fin de la clase interna anónima
-        );
-        botonSalir.addActionListener(
-                // clase interna anónima para manejar evento de botonIntro
-                new ActionListener() { // llamar a agregarRegistro cuando se oprima el botón
-                    public void actionPerformed(ActionEvent evento) {
-                        System.exit(0);
-                    }
-                } // fin de la clase interna anónima
-        ); // fin de la llamada a addActionListener
-           // registrar componente de escucha de ventana para manejar evento de cierre de
-        setSize(800, 400);
-        setLocationRelativeTo(null); // centrar ventana
-        setVisible(true);
-    } // fin del constructor de CrearArchivoSecuencial
-      // permitir al usuario especificar el nombre del archivo
+        botonSalir.setEnabled(false); // Inicia deshabilitado
 
+        // Registrar evento para introducir datos
+        botonIntro.addActionListener(
+            new ActionListener() { // Clase interna anónima para manejar evento
+                public void actionPerformed(ActionEvent evento) {
+                    agregarRegistro(); // Llamar a agregarRegistro() al presionar el botón
+                }
+            } // Fin de la clase interna anónima
+        );
+
+        // Registrar evento para salir del programa
+        botonSalir.addActionListener(
+            new ActionListener() {
+                public void actionPerformed(ActionEvent evento) {
+                    System.exit(0); // Terminar el programa
+                }
+            } // Fin de la clase interna anónima
+        ); // Fin de la llamada a addActionListener
+
+        // Configuración final de la ventana
+        setSize(800, 400); // Tamaño de la ventana
+        setLocationRelativeTo(null); // Centrar la ventana en pantalla
+        setVisible(true); // Hacer la ventana visible
+    } // Fin del constructor de CrearArchivoSecuencial
+
+    // Permitir al usuario especificar el nombre del archivo
     private void abrirArchivo() {
-        // mostrar cuadro de diálogo de archivo, para que el usuario pueda elegir el
-        // archivo a abrir
+        // Mostrar cuadro de diálogo de archivo para elegir archivo
         JFileChooser selectorArchivo = new JFileChooser();
-        selectorArchivo.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        int resultado = selectorArchivo.showSaveDialog(this);
-        // si el usuario hizo clic en el botón Cancelar del cuadro de diálogo, regresar
+        selectorArchivo.setFileSelectionMode(JFileChooser.FILES_ONLY); // Solo archivos, no carpetas
+        int resultado = selectorArchivo.showSaveDialog(this); // Mostrar cuadro de guardar
+
+        // Si el usuario canceló la selección, no hacer nada
         if (resultado == JFileChooser.CANCEL_OPTION)
             return;
-        File nombreArchivo = selectorArchivo.getSelectedFile(); // obtener archivo seleccionado
-        // mostrar error si es inválido
+
+        // Obtener archivo seleccionado
+        File nombreArchivo = selectorArchivo.getSelectedFile();
+
+        // Mostrar error si el nombre de archivo es inválido
         if (nombreArchivo == null || nombreArchivo.getName().equals(""))
             JOptionPane.showMessageDialog(this, "Nombre de archivo inválido",
                     "Nombre de archivo inválido", JOptionPane.ERROR_MESSAGE);
-        else { // abrir archivo
+        else { // Si el nombre es válido
             try {
-                salida = new ObjectOutputStream(new FileOutputStream(nombreArchivo));
-                botonAbrir.setEnabled(false);
-                botonIntro.setEnabled(true);
-                botonSalir.setEnabled(true);
+                salida = new ObjectOutputStream(new FileOutputStream(nombreArchivo)); // Crear flujo de salida
+                botonAbrir.setEnabled(false);  // Desactivar botón de abrir
+                botonIntro.setEnabled(true);   // Activar botón de introducir
+                botonSalir.setEnabled(true);   // Activar botón de salir
             }
-            // procesar excepciones que pueden ocurrir al abrir el archivo
+            // Procesar errores al abrir el archivo
             catch (IOException excepcionES) {
                 JOptionPane.showMessageDialog(this, "Error al abrir el archivo",
                         "Error", JOptionPane.ERROR_MESSAGE);
             }
-        } // fin de instrucción else
-    } // fin del método abrirArchivo
-      // cerrar archivo y terminar la aplicación
+        } // Fin de else
+    } // Fin del método abrirArchivo
 
-    private void cerrarArchivo() { // cerrar el archivo
+    // Cerrar archivo y terminar la aplicación
+    private void cerrarArchivo() {
         try {
-            salida.close();
-            System.exit(0);
+            salida.close(); // Cerrar flujo de salida
+            System.exit(0); // Terminar el programa
         }
-        // procesar excepciones que pueden ocurrir al cerrar el archivo
+        // Procesar excepciones al cerrar el archivo
         catch (IOException excepcionES) {
             JOptionPane.showMessageDialog(this, "Error al cerrar el archivo",
                     "Error", JOptionPane.ERROR_MESSAGE);
             System.exit(1);
         }
-    } // fin del método cerrarArchivo
-      // agregar registro al archivo
+    } // Fin del método cerrarArchivo
 
+    // Agregar un registro al archivo
     public void agregarRegistro() {
-        int numeroCuenta = 0;
-        RegistroCalif registro;
-        String valoresCampos[] = interfazUsuario.obtenerValoresCampos();
-        // si el valor del campo cuenta no está vacío
+        int numeroCuenta = 0; // Número de control del alumno
+        RegistroCalif registro; // Objeto a guardar
+        String valoresCampos[] = interfazUsuario.obtenerValoresCampos(); // Obtener datos de la interfaz
+
+        // Si el campo de número de control no está vacío
         if (!valoresCampos[Plantilla.NUMERODECONTROL].equals("")) {
-            // escribir valores en el archivo
             try {
+                // Convertir el número de control a entero
                 numeroCuenta = Integer.parseInt(valoresCampos[Plantilla.NUMERODECONTROL]);
-                if (numeroCuenta > 0) {
-                    // crear nuevo registro
+                if (numeroCuenta > 0) { // Validar número positivo
+                    // Crear un nuevo registro con los datos ingresados
                     registro = new RegistroCalif(numeroCuenta,
                             valoresCampos[Plantilla.NOMBRE],
                             Integer.parseInt(valoresCampos[Plantilla.CALIF1]),
                             Integer.parseInt(valoresCampos[Plantilla.CALIF2]),
                             Integer.parseInt(valoresCampos[Plantilla.CALIF3]));
-                    // escribir el registro y vaciar el búfer
+
+                    // Escribir el objeto en el archivo
                     salida.writeObject(registro);
-                    salida.flush();
+                    salida.flush(); // Asegurar que se escriba en disco
                 } else {
+                    // Mostrar error si el número es inválido
                     JOptionPane.showMessageDialog(this,
                             "El Num. de la Cta. debe ser mayor que 0",
                             "Num. de la Cta. incorrecto", JOptionPane.ERROR_MESSAGE);
                 }
-                // borrar campos de texto
+
+                // Borrar campos de la interfaz
                 interfazUsuario.borrarCampos();
-            } // fin de bloque try
-              // procesar formato inválido de número de cuenta o saldo
+            }
+            // Procesar error de formato en los datos ingresados
             catch (NumberFormatException excepcionFormato) {
                 JOptionPane.showMessageDialog(this, "Num. de la Cta. o Saldo incorrecto",
                         "Formato de número incorrecto",
                         JOptionPane.ERROR_MESSAGE);
             }
-            // procesar excepciones que pueden ocurrir al escribir en el archivo
+            // Procesar errores al escribir en el archivo
             catch (IOException excepcionES) {
                 JOptionPane.showMessageDialog(this, "Error al escribir en el archivo",
                         "Excepción de ES", JOptionPane.ERROR_MESSAGE);
-                cerrarArchivo();
+                cerrarArchivo(); // Cerrar archivo en caso de error
             }
-        } // fin de instrucción if
-    } // fin del método agregarRegistro
-      // implementación del método principal
+        } // Fin de if
+    } // Fin del método agregarRegistro
 
+    // Método principal
     public static void main(String args[]) {
-        CrearArchivoSecuencial Cas = new CrearArchivoSecuencial();
-        Cas.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        CrearArchivoSecuencial Cas = new CrearArchivoSecuencial(); // Crear ventana
+        Cas.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Cerrar al cerrar la ventana
     }
-} // fin de la clase CrearArchivoSecuencial
+} // Fin de la clase CrearArchivoSecuencial
