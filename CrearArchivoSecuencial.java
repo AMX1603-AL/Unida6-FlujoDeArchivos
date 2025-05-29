@@ -60,7 +60,7 @@ public class CrearArchivoSecuencial extends JFrame { // Clase principal que here
         botonSalir.addActionListener(
             new ActionListener() {
                 public void actionPerformed(ActionEvent evento) {
-                    System.exit(0); // Terminar el programa
+                    cerrarArchivo();
                 }
             } // Fin de la clase interna anónima
         ); // Fin de la llamada a addActionListener
@@ -108,7 +108,8 @@ public class CrearArchivoSecuencial extends JFrame { // Clase principal que here
     private void cerrarArchivo() {
         try {
             salida.close(); // Cerrar flujo de salida
-            System.exit(0); // Terminar el programa
+            dispose();
+            new MenuPrincipal(); // Terminar el programa
         }
         // Procesar excepciones al cerrar el archivo
         catch (IOException excepcionES) {

@@ -42,7 +42,8 @@ public class LeerArchivoSecuencial extends JFrame {
             new WindowAdapter() {
                 public void windowClosing(WindowEvent evento) {
                     if (entrada != null) cerrarArchivo();
-                    System.exit(0);
+                    cerrarArchivo();
+                    new MenuPrincipal();
                 }
             }
         );
@@ -82,7 +83,8 @@ public class LeerArchivoSecuencial extends JFrame {
         botonSalir.addActionListener(
             new ActionListener() {
                 public void actionPerformed(ActionEvent evento) {
-                    System.exit(0);
+                    dispose(); // Cerrar la ventana actual
+                    new MenuPrincipal();
                 }
             }
         );
@@ -206,10 +208,9 @@ public class LeerArchivoSecuencial extends JFrame {
     private void cerrarArchivo() {
         try {
             entrada.close();
-            System.exit(0);
+            dispose(); // Volver al menú principal
         } catch (IOException excepcionES) {
             JOptionPane.showMessageDialog(this, "Error al cerrar el archivo", "Error", JOptionPane.ERROR_MESSAGE);
-            System.exit(0);
         }
     }
 

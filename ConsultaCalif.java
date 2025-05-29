@@ -63,7 +63,8 @@ public class ConsultaCalif extends JFrame {
             new ActionListener() {
                 // cerrar el programa
                 public void actionPerformed(ActionEvent evento) {
-                    System.exit(0);
+                    dispose();
+                    new MenuPrincipal(); // regresar al menú principal
                 }
             } // fin de la clase interna anónima
         ); // fin de la llamada a addActionListener
@@ -88,8 +89,8 @@ public class ConsultaCalif extends JFrame {
             new WindowAdapter() {
                 // cerrar archivo y terminar el programa
                 public void windowClosing(WindowEvent evento) {
-                    cerrarArchivo();
-                    System.exit(0);
+                    dispose();
+                    new MenuPrincipal(); // regresar al menú principal
                 }
             } // fin de la clase interna anónima
         ); // fin de la llamada a addWindowListener
