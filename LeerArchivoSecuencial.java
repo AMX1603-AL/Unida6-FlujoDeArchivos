@@ -1,222 +1,220 @@
-
-//Ejemplo 6.9
+// Jesus Armando Diaz Santoyo
 // Este programa lee un archivo de objetos en forma secuencial
 // y muestra cada uno de los registros.
+
 import java.io.*;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
 public class LeerArchivoSecuencial extends JFrame {
-    private ObjectInputStream entrada;
-    private Plantilla interfazUsuario;
-    private File nombreArchivo;
-    private int posicionActual = 0;
+    // Variables de instancia
+    private ObjectInputStream entrada;  // Para leer objetos del archivo
+    private Plantilla interfazUsuario;  // Interfaz gráfica reutilizable
+    private File nombreArchivo;        // Archivo seleccionado
+    private int posicionActual = 0;    // Para controlar la posición actual en el archivo
+
+    // Botones de la interfaz
     private JButton botonSiguiente, botonAbrir, botonRegresar, botonSalir;
 
     // Constructor -- inicializar el marco
     public LeerArchivoSecuencial() {
         super("Leer un archivo secuencial de objetos");
-        // crear instancia de la interfaz de usuario reutilizable
-        interfazUsuario = new Plantilla(6); // cuatro campos de texto
+
+        // Crear la interfaz de usuario con 6 campos de texto (Num Ctrl, Nombre, Calif1, Calif2, Calif3, Prom)
+        interfazUsuario = new Plantilla(6);
         getContentPane().add(interfazUsuario, BorderLayout.CENTER);
-        // obtener referencia al botón de tarea genérico hacerTarea1 de IUBanco
+
+        // Configurar botones reutilizados de la interfaz
         botonAbrir = interfazUsuario.obtenerBotonHacerTarea1();
         botonAbrir.setText("Abrir archivo");
-        // registrar componente de escucha para llamar a abrirArchivo cuando se oprima
-        // el botón
+        // Evento para abrir archivo
         botonAbrir.addActionListener(
-                // clase interna anónima para manejar evento de botonAbrir
-                new ActionListener() { // cerrar archivo y terminar la aplicación
-                    public void actionPerformed(ActionEvent evento) {
-                        abrirArchivo();
-                    }
-                } // fin de la clase interna anónima
-        ); // fin de la llamada a addActionListener
-           // registrar componente de escucha de ventana para evento de cierre de ventana
+            new ActionListener() {
+                public void actionPerformed(ActionEvent evento) {
+                    abrirArchivo();
+                }
+            }
+        );
+
+        // Evento para el cierre de la ventana: cerrar archivo y salir
         addWindowListener(
-                // clase interna anónima para manejar evento windowClosing
-                new WindowAdapter() { // cerrar el archivo y terminar la aplicación
-                    public void windowClosing(WindowEvent evento) {
-                        if (entrada != null)
-                            cerrarArchivo();
-                        System.exit(0);;
-                    }
-                } // fin de la clase interna anónima
-        ); // fin de la llamada a addWindowListener
-           // obtener referencia al botón de tarea genérico hacerTarea2 de IUBanco
+            new WindowAdapter() {
+                public void windowClosing(WindowEvent evento) {
+                    if (entrada != null) cerrarArchivo();
+                    System.exit(0);
+                }
+            }
+        );
+
+        // Configurar el resto de botones
         botonSiguiente = interfazUsuario.obtenerBotonHacerTarea2();
         botonSiguiente.setText("Siguiente registro");
-        botonSiguiente.setEnabled(false);
+        botonSiguiente.setEnabled(false); // Desactivado inicialmente
+
         botonRegresar = interfazUsuario.obtenerBotonHacerTarea3();
         botonRegresar.setText("Regresar registro");
-        botonRegresar.setEnabled(false);
+        botonRegresar.setEnabled(false); // Desactivado inicialmente
+
         botonSalir = interfazUsuario.obtenerBotonHacerTarea4();
         botonSalir.setText("Salir");
-        botonSalir.setEnabled(false);
+        botonSalir.setEnabled(false); // Desactivado inicialmente
 
-        // registrar componente de escucha para llamar a leerRegistro cuando se oprima
-        // el botón
+        // Evento: Leer siguiente registro
         botonSiguiente.addActionListener(
-                // clase interna anónima para manejar evento de siguienteRegistro
-                new ActionListener() { // llamar a leerRegistro cuando el usuario haga clic en siguienteRegistro
-                    public void actionPerformed(ActionEvent evento) {
-                        leerRegistro();
-                    }
-                } // fin de la clase interna anónima
+            new ActionListener() {
+                public void actionPerformed(ActionEvent evento) {
+                    leerRegistro();
+                }
+            }
         );
 
+        // Evento: Regresar al registro anterior
         botonRegresar.addActionListener(
-                // clase interna anónima para manejar evento de siguienteRegistro
-                new ActionListener() { // llamar a leerRegistro cuando el usuario haga clic en siguienteRegistro
-                    public void actionPerformed(ActionEvent evento) {
-                        // regresar a la pantalla anterior
-                        regresarRegistro();
-                    }
-                } // fin de la clase interna anónima
+            new ActionListener() {
+                public void actionPerformed(ActionEvent evento) {
+                    regresarRegistro();
+                }
+            }
         );
 
+        // Evento: Salir del programa
         botonSalir.addActionListener(
-                // clase interna anónima para manejar evento de siguienteRegistro
-                new ActionListener() { // llamar a leerRegistro cuando el usuario haga clic en siguienteRegistro
-                    public void actionPerformed(ActionEvent evento) {
-                        // regresar a la pantalla anterior
-                        System.exit(0);
-                    }
-                } // fin de la clase interna anónima
+            new ActionListener() {
+                public void actionPerformed(ActionEvent evento) {
+                    System.exit(0);
+                }
+            }
         );
 
+        // Configuración de la ventana principal
         pack();
         setSize(800, 400);
-        setLocationRelativeTo(null); // centrar ventana
+        setLocationRelativeTo(null); // Centrar la ventana
         setVisible(true);
-    } // fin del constructor de LeerArchivoSecuencial
-      // permitir al usuario seleccionar el archivo a abrir
+    } // fin del constructor
 
+    // Método para abrir un archivo seleccionado por el usuario
     private void abrirArchivo() {
-        // mostrar el cuadro de diálogo del archivo, para que el usuario pueda
-        // seleccionar el archivo a abrir
         JFileChooser selectorArchivo = new JFileChooser();
         selectorArchivo.setFileSelectionMode(JFileChooser.FILES_ONLY);
         int resultado = selectorArchivo.showOpenDialog(this);
-        // si el usuario hizo clic en el botón Cancelar en el cuadro de diálogo,
-        // regresar
-        if (resultado == JFileChooser.CANCEL_OPTION)
-            return;
-        // obtener el archivo seleccionado
+
+        // Si el usuario cancela, no hacer nada
+        if (resultado == JFileChooser.CANCEL_OPTION) return;
+
+        // Obtener el archivo seleccionado
         nombreArchivo = selectorArchivo.getSelectedFile();
-        // mostrar error si el nombre de archivo es incorrecto
-        if (nombreArchivo == null || nombreArchivo.getName().equals(""))
-            JOptionPane.showMessageDialog(this, "Nombre de archivo incorrecto",
-                    "Nombre de archivo incorrecto", JOptionPane.ERROR_MESSAGE);
-        else {
-            // abrir archivo
+
+        // Validar nombre de archivo
+        if (nombreArchivo == null || nombreArchivo.getName().equals("")) {
+            JOptionPane.showMessageDialog(this, "Nombre de archivo incorrecto", "Error", JOptionPane.ERROR_MESSAGE);
+        } else {
+            // Intentar abrir el archivo
             try {
                 entrada = new ObjectInputStream(new FileInputStream(nombreArchivo));
+                // Activar los botones de navegación
                 botonAbrir.setEnabled(false);
                 botonSiguiente.setEnabled(true);
                 botonRegresar.setEnabled(true);
                 botonSalir.setEnabled(true);
+            } catch (IOException excepcionES) {
+                JOptionPane.showMessageDialog(this, "Error al abrir el archivo", "Error", JOptionPane.ERROR_MESSAGE);
             }
-            // procesar excepciones que pueden ocurrir al abrir el archivo
-            catch (IOException excepcionES) {
-                JOptionPane.showMessageDialog(this, "Error al abrir el archivo",
-                        "Error", JOptionPane.ERROR_MESSAGE);
-            }
-        } // fin de instrucción else
-    } // fin del método abrirArchivo
-      // leer registro del archivo
-
-    public void leerRegistro() {
-        RegistroCalif registro;
-        // leer los valores del archivo
-        try {
-            registro = (RegistroCalif) entrada.readObject();
-            // crear arreglo de objetos String a mostrar en la GUI
-            String valores[] = { String.valueOf(registro.ObtenerNumeroDeControl()), registro.ObtenerNombre(),
-                    String.valueOf(registro.ObtenerCalif1()),
-                    String.valueOf(registro.ObtenerCalif2()), String.valueOf(registro.ObtenerCalif3()),
-                    String.valueOf(registro.ObtenerProm()) };
-            // mostrar contenido del registro
-            interfazUsuario.establecerValoresCampos(valores);
-            posicionActual++;
-            System.out.println("Posicion actual: " + posicionActual);
-        } catch (EOFException excepcionFinDeArchivo) {
-            botonSiguiente.setEnabled(false);
-            JOptionPane.showMessageDialog(this, "No hay más registros en el archivo",
-                    "Fin del archivo", JOptionPane.ERROR_MESSAGE);
-        }
-        // mostrar mensaje de error si no se encuentra la clase
-        catch (ClassNotFoundException excepcionClaseNoEncontrada) {
-            JOptionPane.showMessageDialog(this, "No se pudo crear el objeto",
-                    "Clase no encontrada", JOptionPane.ERROR_MESSAGE);
-        }
-        // mostrar mensaje de error si no se puede leer debido a un problema con el
-        // archivo
-        catch (IOException excepcionES) {
-            JOptionPane.showMessageDialog(this,
-                    "Error al leer del archivo",
-                    "Error de lectura", JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    public void regresarRegistro() {
-        if (posicionActual <= 1) {
-            JOptionPane.showMessageDialog(this, "Estás en el primer registro",
-                    "Inicio del archivo", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        
-            posicionActual = posicionActual - 2; // Ir al anterior
-            if (posicionActual < 0) {
-                posicionActual = 0;
-            }
+    // Leer un registro del archivo
+    public void leerRegistro() {
+        RegistroCalif registro;
 
         try {
+            // Leer el siguiente objeto del archivo
+            registro = (RegistroCalif) entrada.readObject();
+
+            // Crear arreglo de String con los valores a mostrar
+            String valores[] = {
+                String.valueOf(registro.ObtenerNumeroDeControl()),
+                registro.ObtenerNombre(),
+                String.valueOf(registro.ObtenerCalif1()),
+                String.valueOf(registro.ObtenerCalif2()),
+                String.valueOf(registro.ObtenerCalif3()),
+                String.valueOf(registro.ObtenerProm())
+            };
+
+            // Mostrar los datos en la GUI
+            interfazUsuario.establecerValoresCampos(valores);
+            posicionActual++; // Avanzar a la siguiente posición
+            System.out.println("Posicion actual: " + posicionActual);
+
+        } catch (EOFException excepcionFinDeArchivo) {
+            // Fin del archivo
+            botonSiguiente.setEnabled(false);
+            JOptionPane.showMessageDialog(this, "No hay más registros en el archivo", "Fin del archivo", JOptionPane.ERROR_MESSAGE);
+        } catch (ClassNotFoundException excepcionClaseNoEncontrada) {
+            // Error si la clase del objeto no se encuentra
+            JOptionPane.showMessageDialog(this, "No se pudo crear el objeto", "Clase no encontrada", JOptionPane.ERROR_MESSAGE);
+        } catch (IOException excepcionES) {
+            // Error de lectura general
+            JOptionPane.showMessageDialog(this, "Error al leer del archivo", "Error de lectura", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    // Método para regresar al registro anterior
+    public void regresarRegistro() {
+        if (posicionActual <= 1) {
+            // No se puede regresar más
+            JOptionPane.showMessageDialog(this, "Estás en el primer registro", "Inicio del archivo", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Retroceder 2 posiciones porque se leerá un registro al final
+        posicionActual = posicionActual - 2;
+        if (posicionActual < 0) posicionActual = 0;
+
+        try {
+            // Volver a abrir el archivo desde el inicio
             entrada = new ObjectInputStream(new FileInputStream(nombreArchivo));
 
-            // Leer hasta la posición actual
+            // Leer hasta la posición deseada
             for (int i = 0; i <= posicionActual; i++) {
                 RegistroCalif registro = (RegistroCalif) entrada.readObject();
                 String valores[] = {
-                        String.valueOf(registro.ObtenerNumeroDeControl()),
-                        registro.ObtenerNombre(),
-                        String.valueOf(registro.ObtenerCalif1()),
-                        String.valueOf(registro.ObtenerCalif2()),
-                        String.valueOf(registro.ObtenerCalif3()),
-                        String.valueOf(registro.ObtenerProm())
+                    String.valueOf(registro.ObtenerNumeroDeControl()),
+                    registro.ObtenerNombre(),
+                    String.valueOf(registro.ObtenerCalif1()),
+                    String.valueOf(registro.ObtenerCalif2()),
+                    String.valueOf(registro.ObtenerCalif3()),
+                    String.valueOf(registro.ObtenerProm())
                 };
                 interfazUsuario.establecerValoresCampos(valores);
             }
+
+            // Preparar para la siguiente lectura
             posicionActual++;
-
-            System.out.println(posicionActual); // Aumentar para la siguiente lectura
-
+            System.out.println("Posición actual: " + posicionActual);
             botonSiguiente.setEnabled(true);
+
         } catch (IOException e) {
-            JOptionPane.showMessageDialog(this, "Error al reabrir el archivo",
-                    "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Error al reabrir el archivo", "Error", JOptionPane.ERROR_MESSAGE);
         } catch (ClassNotFoundException e) {
-            JOptionPane.showMessageDialog(this, "Error al reabrir el archivo",
-                    "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Error al reabrir el archivo", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    private void cerrarArchivo() { // cerrar archivo y salir
+    // Cerrar el archivo y salir
+    private void cerrarArchivo() {
         try {
             entrada.close();
             System.exit(0);
-        }
-        // procesar excepción que puede ocurrir mientras se cierra el archivo
-        catch (IOException excepcionES) {
-            JOptionPane.showMessageDialog(this, "Error al cerrar el archivo",
-                    "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (IOException excepcionES) {
+            JOptionPane.showMessageDialog(this, "Error al cerrar el archivo", "Error", JOptionPane.ERROR_MESSAGE);
             System.exit(0);
         }
-    } // fin del método cerrarArchivo
-      // implementación del método principal
+    }
 
+    // Método principal: crear la ventana
     public static void main(String args[]) {
         new LeerArchivoSecuencial();
     }
-} // fin de la clase LeerArchivoSecuencial
+} // Fin de la clase LeerArchivoSecuencial
