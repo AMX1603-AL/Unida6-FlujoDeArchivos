@@ -40,7 +40,7 @@ public class ConsultaCalif extends JFrame {
         panelBotones.add(botonCredito);
         botonCredito.addActionListener(new ManejadorBotones());
         // crear y configurar botón para obtener cuentas con saldos con débito
-        botonDebito = new JButton("Reprobados");
+        botonDebito = new JButton("No Aprobados");
         panelBotones.add(botonDebito);
         botonDebito.addActionListener(new ManejadorBotones());
         // crear y configurar botón para obtener cuentas con saldos en ceros
